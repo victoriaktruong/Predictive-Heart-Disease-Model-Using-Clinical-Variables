@@ -18,7 +18,7 @@ The table below shows the variables used for analysis:
 | Maximum heart rate | Major vessels count (0-4)     | Chest pain type (typical angina/atypical angina/non-anginal pain/asymptomatic) |
 | Old peak *          |  | |
 
-* ST depression induced by exercise relative to the rest, where ST relates to depression on the ECG plot. 
+\* ST depression induced by exercise relative to the rest, where ST relates to depression on the ECG plot. 
 
 [1]: https://archive.ics.uci.edu/dataset/45/heart+disease
 [2]: https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
