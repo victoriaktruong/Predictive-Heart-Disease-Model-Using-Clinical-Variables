@@ -1,413 +1,454 @@
-#__________________________________________________________________________________________________#
+# -----------------------------------------------------------------------------
 
-#Heart Disease Project Master Script
+# Predicting Heart Disease Using Clinical Variables
 
-#_________________________________________________________________________________________________#
+# -----------------------------------------------------------------------------
+# Section 1: Data Setup and Preparation
+# -----------------------------------------------------------------------------
 
-#Install the packages below if not done so already
-install.packages("tidyverse") #Tidyverse is a collection of common packages used for
-                            #data analysis/manipulation, visualization (ggplot2, ddplyr, tidyr, etc)
+# 1.1: Install the Required Packages
 
-install.packages("ggcorrplot") #Visualizes correlation matrices using ggplot2
+# Tidyverse is a collection of packages commonly used for data analysis,
+# manipulation, and visualization (e.g., ggplot2, ddplyr, tidyr)
 
-install.packages("factoextra") #Helps make the PCA figures
+install.packages("tidyverse")
 
-install.packages("vegan") #Helps with multivariate data analysis (PCA)
+# GGcorrplot visualizes correlation matrices using ggplot2
+install.packages("ggcorrplot")
 
-install.packages("car") #Helps with hypothesis testing and checking for multi-collinearity
+# Factoextra is used to make PCA figures
+install.packages("factoextra")
 
-#Load the packages 
-library(tidyverse) 
+# Vegan is used in multivariate data analysis (PCA)
+install.packages("vegan")
+
+# Car helps with hypothesis testing and checking for multi-collinearity
+install.packages("car")
+
+
+# 1.2: Load and Prepare Data
+
+# Load the packages
+library(tidyverse)
 library(ggcorrplot)
 library(factoextra)
 library(vegan)
 library(car)
 
-#Add the data set to your working directory and then read and store it in an object called "heart_original"
+# Add the dataset to your working directory, then read and save it within an
+# object called "heart_original"
 heart_original <- read_csv("heart.csv")
 
-#View the data set to make sure it loaded onto R correctly
+# View the dataset to make sure it loaded correctly
 View(heart_original)
 
-#Rename some of the columns using the rename command to make it easier to work with
+# Rename some columns for better usability
 heart_original <- rename(heart_original,
-                        chest_pain_type = "cp",
-                        max_HR = "thalach",
-                        heart_disease = "target",
-                        resting_BP = "trestbps",
-                        fasting_blood_sugar = "fbs",
-                        resting_ECG = "restecg", 
-                        exercise_induced_angina = "exang",
-                        major_vessels_count = "ca",
-                        cholesterol = "chol")
+                         chest_pain_type = "cp",
+                         max_HR = "thalach",
+                         heart_disease = "target",
+                         resting_BP = "trestbps",
+                         fasting_blood_sugar = "fbs",
+                         resting_ECG = "restecg",
+                         exercise_induced_angina = "exang",
+                         major_vessels_count = "ca",
+                         cholesterol = "chol")
 
-
-#Convert all the 0 values in the "thal" column to NA as they are NULL in the original data set
+# Convert all 0 values in "thal" column to NA as
+# these are NULL in the original dataset)
 heart_original$thal[heart_original$thal == 0] <- NA
 
-#Remove all of the NA rows in the dataset
+# Remove all of the NA rows in the dataset
 heart_original <- na.omit(heart_original)
 
-
-#Create another object called "heart_modified" which will be a copy of the object "heart_original"
-#This is important because we will not make any modifications to "heart_original" so that we will always have the
-#original data set available
-#We will use "heart_modified" to make any changes to the data such as changing some variables into factors/discrete data
+# Create object called "heart_modified" which will be a copy of the object
+# "heart_original"
+# Modifications will not be made to "heart_original", therefore having a copy
+# ensures that we will always have the original dataset
 heart_modified <- heart_original
-#__________________________________________________________________________________________________#
 
+# -----------------------------------------------------------------------------
+# Section 2: Exploratory Data Analysis
+# -----------------------------------------------------------------------------
 
-#________________________________________________________________________________________________#
-#Creating box plots to visually check for outliers in our data set
-#The %>% symbol represents a pipe operator which allows us to chain commands together
+# 2.1: Box Plots for Outlier Detection
 
-heart_modified %>% 
-select(age, resting_BP, max_HR, cholesterol, oldpeak) %>% #Select all the continuous variables
-boxplot(xlab = "Variables",
-        names = c("age", "resting BP", "max HR", "cholesterol", "old peak"), #Renaming the variables 
-        cex.lab = 1.4, #Changes the size of the x-axis label
-        cex.axis = 1.2) #Changes the size of the axis ticks and tick labels 
-#________________________________________________________________________________________________#
+# Create box plots to visually check for outliers in the dataset
+heart_modified %>%
+  select(age, resting_BP, max_HR, cholesterol, oldpeak) %>%
+  boxplot(xlab = "Variables",
+          names = c("age", "resting BP", "max HR", "cholesterol", "old peak"),
+          cex.lab = 1.4,
+          cex.axis = 1.2)
 
+# 2.2 Correlation Matrix Visualization
+# Create the correlation matrix for the data set and the PCA
+cor_matrix <- round(cor(heart_original), 1)
 
-#________________________________________________________________________________________________#
-#Saad's code for creating the correlation matrix for the data set and the PCA 
-#Place the data set into the "cor" command and round by 1 decimal point.
-#Place it all into another object called "cor_matrix"
-cor_matrix = round(cor(heart_original), 1)
+# View the correlation matrix
+cor_matrix
 
-cor_matrix #Run this line of code to view the correlation matrix  
-
-#To visualize the correlation matrix, use the ggcorrplot command and insert the 
-#cor_matrix object as the argument
+# To visualize the correlation matrix, use the ggcorrplot command and insert
+# the cor_matrix object as the argument ##########??????
 ggcorrplot(cor_matrix, lab = TRUE) +
-  theme(axis.text.x = element_text(angle = 90 , vjust = 0.5)) #Change the x axis labels position so 
-                                                                #they are rotated 90 degrees and centered
-#________________________________________________________________________________________________#
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+# -----------------------------------------------------------------------------
+# Section 3: Principle Component Analysis (PCA)
+# -----------------------------------------------------------------------------
+
+# 3.1: Perform PCA and View Results
+
+# Create an object called "pca_heart" to hold PCA results
+pca_heart <- prcomp(heart_original,
+                    scale = TRUE, center = TRUE)
+
+# View the PCA results
+pca_heart
 
 
-#________________________________________________________________________________________________#
-#PCA code
+# 3.2: Summary and Loadings
 
-#Create an object called "pca" which will hold the results from the PCA 
-pca.heart = prcomp(heart_original, #"prcomp" function conducts the PCA on the argument (the heart data set) 
-            scale = TRUE, center = TRUE) #scale = TRUE scales the data so that it has no mean and unit variance before doing the PCA
+# Display summary statistics for PCA
+summary(pca_heart)
 
-#View the PCA results
-pca.heart
-
-#The summary function displays the standard deviation, proportion of variance and
-#cumulative proportion of variance explained by each principle component
-summary(pca.heart)
-
-#View the loadings
-pca.heart$rotation
+# View the loadings
+pca_heart$rotation
 
 
-#Create a line plot of the principle component scores using rule 1 
-screeplot(pca.heart, 
-        npcs = length(pca.heart$sdev), #The number of principal components to include on the plot 
-        type = "line", #Make a line plot
-        cex.lab = 1.2, #Change font size for labels
-        cex.main = 1.5) #Change font size for title 
+# 3.3: Scree Plot
 
-abline(1,0, col = "red") #Draws a straight with an intercept of 1 and a slope of 0
-
-
-#Create a bi-plot of the principle component scores with the eigenvectors
-fviz_pca_var(pca.heart,
-            axes = c(1,2), #Use PC1 and PC2
-            col.var = "contrib", # Color by contributions to the PC
-            gradient.cols = c("lightblue4", "orange", "red"),
-            repel = T,) + # Avoid text overlapping
-labs(col = "Contribution") #Title of the legend
+# Create a line plot of the principle component scores using rule 1
+screeplot(pca_heart,
+          npcs = length(pca_heart$sdev),
+          type = "line",
+          cex.lab = 1.2,
+          cex.main = 1.5)
+abline(1, 0, col = "red")
 
 
-#Create a bi-plot of the principle component scores with only eigenvalues shown
-fviz_pca_ind(pca.heart, 
-            col.ind = "cos2", # Color by quality of representation
-            gradient.cols = c("lightblue4", "orange", "red"),
-            repel = T, # Avoid text overlapping
-            label = "" ) + # Remove the labels for each data point
-labs(col = "Contribution") #Title of the legend
-#__________________________________________________________________________________________________#
+# 3.4: Bi-Plots
+
+# Create a bi-plot of the principle component scores with the eigenvectors
+fviz_pca_var(pca_heart,
+             axes = c(1, 2),
+             col.var = "contrib",
+             gradient.cols = c("lightblue4", "orange", "red"),
+             repel = TRUE, ) +
+  labs(col = "Contribution")
+
+# Create a bi-plot of the principle component scores with only eigenvalues shown
+fviz_pca_ind(pca_heart,
+             col.ind = "cos2",
+             gradient.cols = c("lightblue4", "orange", "red"),
+             repel = TRUE,
+             label = "") +
+  labs(col = "Contribution")
+
+# -----------------------------------------------------------------------------
+# Section 4: Data Preprocessing
+# -----------------------------------------------------------------------------
+
+# 4.1: Convert Categorical Variables into Factors
+
+# Convert the "heart_disease" variable in the dataset into a factor with
+# updated labels  "Absent" and "Present" in place of 0 and 1
+heart_modified$heart_disease <-
+  factor(heart_modified$heart_disease,
+         levels = c(0, 1), labels = c("Absent", "Present"))
+
+# Convert the "chest_pain_type" variable in the dataset into a factor with
+# descriptive labels representing the types of chest pain, replacing the
+# numeric values 0-3
+heart_modified$chest_pain_type <-
+  factor(heart_modified$chest_pain_type,
+         levels = c(0, 1, 2, 3), labels = c("Typical angina",
+                                            "Atypical angina",
+                                            "Non-anginal pain",
+                                            "Asymptomatic"))
+
+# Convert the remaining variables into factors, retaining labels consistent
+# with the original dataset
+heart_modified$fasting_blood_sugar <-
+  factor(heart_modified$fasting_blood_sugar,
+         levels = c(0, 1), labels = c(">120", "<120"))
+
+heart_modified$resting_ECG <-
+  factor(heart_modified$resting_ECG,
+         levels = c(0, 1, 2), labels = c("normal",
+                                         "ST wave abnormality",
+                                         "left ventricular hypertrophy"))
+
+heart_modified$exercise_induced_angina <-
+  factor(heart_modified$exercise_induced_angina,
+         levels = c(0, 1), labels = c("no", "yes"))
+
+heart_modified$slope <-
+  factor(heart_modified$slope,
+         levels = c(0, 1, 2), labels = c("upsloping", "flat", "downsloping"))
+
+heart_modified$thal <-
+  factor(heart_modified$thal,
+         levels = c(1, 2, 3), labels = c("fixed defect",
+                                         "normal",
+                                         "reversible defect"))
+
+heart_modified$major_vessels_count <-
+  as.factor(heart_modified$major_vessels_count)
+
+heart_modified$sex <-
+  factor(heart_modified$sex,
+         levels = c(0, 1), labels = c("female", "male"))
+
+# -----------------------------------------------------------------------------
 
 
-#_________________________________________________________________________________________________#
-#Emily's code for turning the categorical variables into factors and also subsetting the data
-
-#Convert the "heart_disease" variable in the  data set into a factor that
-#will have new the labels Absent and Present instead of 0 and 1
-heart_modified$heart_disease <- factor(heart_modified$heart_disease, levels = c(0,1), labels = c("Absent", "Present"))
 
 
-#Convert the "chest_pain_type" variable in the  data set into a factor that
-#will have new the labels that represent that name of the type of chest pain 
-#instead of 0-3
-heart_modified$chest_pain_type <- factor(heart_modified$chest_pain_type, levels = c(0,1,2,3), labels = c("Typical angina","Atypical angina","Non-anginal pain","Asymptomatic"))
+# -----------------------------------------------------------------------------
+# Investigation 1: Exploring the Relationship between Chest Pain and
+# Heart Disease
+# -----------------------------------------------------------------------------
+
+# 1.1: Data Subset and Summarization
+
+# Subset and summarize the data to obtain counts for occurences and
+# non-occurrences of heart disease across all four types of chest pain
+heart_cp <- heart_modified %>%
+  select(chest_pain_type, heart_disease) %>%
+  group_by(chest_pain_type, heart_disease) %>%
+  summarise(tally = n())
+
+# View the "heart_cp" object
+View(heart_cp)
 
 
-#Convert the "fasting_blood_sugar" variable into a factor with the  labels that match the original data set
-heart_modified$fasting_blood_sugar <- factor(heart_modified$fasting_blood_sugar, levels = c(0,1), labels = c(">120", "<120"))
+# 1.2: Clustered Bar Chart
 
-
-#Convert the "resting_ECG" variable into a factor with the  labels that match the original data set
-heart_modified$resting_ECG <- factor(heart_modified$resting_ECG, levels = c(0,1,2), labels = c("normal", "ST wave abnormality", "left ventricular hypertrophy"))
-
-
-#Convert the "exercise_induced_angina" variable into a factor with the  labels that match the original data set
-heart_modified$exercise_induced_angina <- factor(heart_modified$exercise_induced_angina, levels = c(0,1), labels = c("no", "yes"))
-
-
-#Convert the "slope" variable into a factor with the  labels that match the original data set
-heart_modified$slope <- factor(heart_modified$slope, levels = c(0,1,2), labels = c("upsloping", "flat", "downsloping"))
-
-
-#Convert the "thal" variable into a factor with the labels that match the original data set
-heart_modified$thal <- factor(heart_modified$thal, levels = c(1,2,3), labels = c("fixed defect", "normal", "reversible defect"))
-
-
-#Convert the "major_vessels_count" variable into a factor with the  labels that match the original data set
-heart_modified$major_vessels_count <- as.factor(heart_modified$major_vessels_count)
-
-
-#Convert the "sex" variable into a factor with the labels that match the original data set
-heart_modified$sex <- factor(heart_modified$sex, levels = c(0,1), labels = c("female", "male"))
-#__________________________________________________________________________________________________#
-
-#--------------------------------------------------------------------------------------------------
-#           Investigation 1: Exploring the relationship between the type of 
-#                            chest pain and the presence of heart disease
-#--------------------------------------------------------------------------------------------------
-
-#_________________________________________________________________________________________________#
-
-#Emily's code to subset and summarize the data so that we have the count for the presence and 
-#absence of heart disease for all 4 types of chest pain.
-#The %>% represents a pipe operator which allows us to chain commands together
-heart_cp <- heart_modified %>% #Creating a new variable called heart_cp to store our subset data.
-    select(chest_pain_type, heart_disease) %>% #Select the "chest_pain_type" and "heart_disease" variable
-    group_by(chest_pain_type, heart_disease) %>% #Group them together
-    summarise(tally = n()) #The summarise verb allows us to count the presence and absence of heart disease 
-                            #for all 4 types of chest pain using the n() function into a object called tally
-
-View(heart_cp) #View the "heart_cp" object to make sure there are no issues
-#__________________________________________________________________________________________________#
-
-
-#__________________________________________________________________________________________________#
-#Saad's code for creating the cluster bar chart from the subset data 
-
-#Select the "heart_cp" object which is the subset data to create the figure.
+# Create a clustered bar chart from the subsetted data
 ggplot(heart_cp, aes(x = chest_pain_type, y = tally, fill = heart_disease)) +
-geom_bar(position = "dodge", stat = "identity") + #position = "dodge" creates the cluster bar chart (places elements side by side for each group)
-scale_fill_manual(values = c("lightblue3", "red4")) + #manually changing the colors
-labs(title = "Heart Disease Frequency per Chest Pain Type", #Creating labels for the graph
-    fill = "Heart disease") + #title of legend
-xlab("Type of Chest Pain") + #x axis label
-ylab("Frequency") + #y axis label
-theme_classic() + #creates a white background and removes grid lines 
-theme(text = element_text(size = 13), #changing the text size
-        plot.title = element_text(hjust = 0.5), #centers the title 
-        legend.text = element_text(size = 13), #changes the legend text size
-        legend.title = element_text(size = 13), #changes the legend title size
-        axis.text.x = element_text(size = 11), #changes the x-axis size
-        axis.text.y = element_text(size = 11)) #changes the y-axis size
-#__________________________________________________________________________________________________#
+  geom_bar(position = "dodge", stat = "identity") +
+  scale_fill_manual(values = c("lightblue3", "red4")) +
+  labs(title = "Heart Disease Frequency per Chest Pain Type",
+       fill = "Heart disease") +
+  xlab("Type of Chest Pain") +
+  ylab("Frequency") +
+  theme_classic() +
+  theme(text = element_text(size = 13),
+        plot.title = element_text(hjust = 0.5),
+        legend.text = element_text(size = 13),
+        legend.title = element_text(size = 13),
+        axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11))
 
 
-#__________________________________________________________________________________________________#
-#Victoria's code for the chi-squared test of independence on the clustered bar chart
-#Create a contingency table that shows the frequency distribution of chest_pain_type and
-#presence/absence of heart disease
-table_heart <- table(heart_modified$chest_pain_type, heart_modified$heart_disease)
+# 1.3: Chi-Squared Test of Independence
 
-#View the table 
+# Perform a chi-squared test of independence on the clustered bar chart results
+
+# Create a contingency table that shows the frequency distribution of chest
+# pain type and presence/absence of heart disease
+table_heart <- table(heart_modified$chest_pain_type,
+                     heart_modified$heart_disease)
+
+# View the table
 print(table_heart)
 
-#Perform the chi-squared test 
+# Perform the chi-squared test
 my_test <- chisq.test(table_heart)
 
-#View the results to find the p-value, degrees of freedom and X^2 values
+# View the results to find the p-value, degrees of freedom and X^2 values
 my_test
-#__________________________________________________________________________________________________#
 
-#--------------------------------------------------------------------------------------------------
-#           Investigation 2: Predicting the presence of heart disease based 
-#                            on max heart rate of patients
-#--------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Investigation 2: Predicting Heart Disease Based on Maximum Heart Rate
+# -----------------------------------------------------------------------------
 
-#__________________________________________________________________________________________________#
-#Emily's code for subsetting the data to be used in the logistic regression figure and analysis
+# 2.1: Data Preparation for Logistic Regression
+
+# Subset the data to include only "max_HR" and "heart_disease" variables
 heart_logistic <- heart_original %>%
-    select(max_HR, heart_disease) %>% #Select "max_HR" and "heart_disease" variables
-    group_by(max_HR, heart_disease) #Group the data together
+  select(max_HR, heart_disease) %>%
+  group_by(max_HR, heart_disease)
 
-
-#View the new object to see if it was made correctly
+# View the modified dataset
 View(heart_logistic)
-#__________________________________________________________________________________________________#
 
 
-#__________________________________________________________________________________________________#
-#Saad's code to create the logistic regression figure
+# 2.2: Logistic Regression Figure
+# Create a logistic regression figure to visualize the relationship between
+# max heart rate and heart disease
 ggplot(data = heart_logistic, aes(x = max_HR, y = heart_disease)) +
-    geom_point() + #Create scatter point
-    theme_classic() + #Creates a white background and removes grid lines
-    geom_smooth(method = "glm", #Uses the Generalized Linear Model
-                method.args = list(family = "quasibinomial"), color = "blue1") + # The probability distribution family is binomial
-    ylab("Heart Disease") + #y-axis label
-xlab("Max Heart Rate") + #x-axis label
-labs(title = "Probability of Heart Disease based on Max Heart Rate") + #Figure title
-theme(plot.title = element_text(hjust = 0.5), #Centers the title 
-        legend.text = element_text(size = 14), #Changes the legend text size
-        legend.title = element_text(size = 14), #Changes the legend title size
-        axis.text.x = element_text(size = 12), #Changes the x-axis size
-        axis.text.y = element_text(size = 12), #Changes the y-axis size
-        axis.title.x = element_text(size = 14), #Changes the x-axis label size
-        axis.title.y = element_text(size = 14)) #Changes the y-axis label size) 
-#__________________________________________________________________________________________________#
+  geom_point() +
+  theme_classic() +
+  geom_smooth(method = "glm",
+              method.args = list(family = "quasibinomial"), color = "blue1") +
+  ylab("Heart Disease") +
+  xlab("Max Heart Rate") +
+  labs(title = "Probability of Heart Disease based on Max Heart Rate") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.text = element_text(size = 14),
+        legend.title = element_text(size = 14),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14))
 
 
-#__________________________________________________________________________________________________#
-#Victoria's code for the logistic regression on max heart rate and presence/absence of heart disease
-#Use a logistic regression model
-model_glm <- glm(heart_disease ~ max_HR, data=heart_original ,family=binomial)
+# 2.3: Logistic Regression Analysis
+# Perform logistic regression on the relationship between max heart rate and
+# heart disease
 
-#View the results from the logistic regression
+# Fit a logistic regression model
+model_glm <- glm(heart_disease ~ max_HR,
+                 data = heart_original,
+                 family = binomial)
+
+# View the results of the logistic regression
 summary(model_glm)
 
-#Plot to check if assumptions are met
-plot(model_glm) #Make sure to view all 4 diagnostic plots before moving on with the code
-#__________________________________________________________________________________________________#
 
-#--------------------------------------------------------------------------------------------------
-#           Investigation 3: Predicting heart disease using all the  
-#                           variables in the data set
-#--------------------------------------------------------------------------------------------------
+# 2.4: Diagnostic Plot to Check Assumptions
+# Make sure to view all 4 diagnostic plots before proceeding on
+# with the analysis
+plot(model_glm)
 
-#__________________________________________________________________________________________________#
-#Victoria's code for the logistic regression on all the variables in the data set and
-#their relation to presence/absence of heart disease
-#Use a logistic regression model
+# -----------------------------------------------------------------------------
+# Investigation 3: Predicting Heart Disease using All Variables
+# -----------------------------------------------------------------------------
 
-#The "." after ~ indicates to select all the variables in the data set
-model_glm_all <- glm(heart_disease ~ . , data=heart_modified, family=binomial)
+# 3.1: Logistic Regression Analysis
 
-#View the results
+# Perform logistic regression using all variables in the dataset to predict
+# the presence/absence of heart disease
+
+# Fit a logistic regression model
+model_glm_all <- glm(heart_disease ~ .,
+                     data = heart_modified,
+                     family = binomial)
+
+# View the results
 summary(model_glm_all)
 
-#Create an analysis of deviance table (Type III tests)
+# Create an analysis of deviance table (Type III tests)
 Anova(model_glm_all, type = 3)
 
-#Plot to check if assumptions are met
-plot(model_glm_all) #Make sure to view all 4 diagnostic plots before moving on with the code
 
-#Check for multi-collinearity 
-vif(model_glm_all) #VIF function measures multi-collinearity
-                    #Adjusted GVIF values > 10 indicates multi-collinearity issues
-#__________________________________________________________________________________________________#
+# 3.2: Diagnostic Plot to Check Assumptions
+
+# Ensure to view all 4 diagnostic plots before proceeding
+plot(model_glm_all)
+
+# Check for multi-collinearity (VIF function measures multi-collinearity)
+# Adjusted GVIF values > 10 indicates multi-collinearity issues
+vif(model_glm_all)
 
 
-#__________________________________________________________________________________________________#
-#Emily's code for creating a new data frame to store the probabilities/fitted values
-#from the "model_glm_all" object
+# 3.3: Predicted Probability Analysis
 
-#Create a new data frame called "predicted_data"
-predicated_data <- data.frame(
-    probability_of_heart_disease = model_glm_all$fitted.values, #create a new column to store the probabilities/fitted values
-    heart_disease_status = heart_modified$heart_disease) #create another column to store the heart disease status of each patient
+# Creating a new data frame to store the predicted probabilities
+# and heart disease status
 
-#Order the data frame from lowest to highest probability
-predicated_data <- predicated_data[
-    order(predicated_data$probability_of_heart_disease, decreasing = F),] 
+# Create a new data frame called "predicted_data"
+predicated_data <-
+  data.frame(probability_of_heart_disease = model_glm_all$fitted.values,
+             heart_disease_status = heart_modified$heart_disease)
 
-#Create a new column which contains an integer in sequence for each row, effectively ranking the rows of the data frame 
-#based on the sorted order. This will help visualize the relationship in the figure
+# Order the data frame from lowest to highest probability
+predicated_data <-
+  predicated_data[order(predicated_data$probability_of_heart_disease,
+                        decreasing = FALSE), ]
+
+# Create a new column for ranking based on sorted order
 predicated_data$rank <- 1:1018
 
-#View the new data frame to make sure all the columns were created
+# View the new data frame to verify columns
 View(predicated_data)
-#__________________________________________________________________________________________________#
 
 
-#__________________________________________________________________________________________________#
-#Saad's code for creating the scatter plot corresponding to the "model_glm_all" object
+# 3.4: Scatter Plot Visualization
+
+# Create a scatter plot to visualize the predicted probabilities
+# based on ranking
 
 #Select the "predicted_data" data frame for this figure
-ggplot(data = predicated_data, aes(x=rank, y = probability_of_heart_disease)) +
-    geom_point(aes(color= heart_disease_status), stroke = 1.4) + #Color by heart disease status. Stroke changes the thickness of the points
-    xlab("Index (patients ranked based on their predicted probabilites)") + #X axis label
-    ylab("Predicted Probability of Heart Disease") + #Y axis label
-    scale_color_manual(
-        name = "Heart Disease", #Title for the legend
-        values = c("lightblue3", "darkred"), #Manually changing the color
-        labels = c("Absent", "Present")) + #Legend labels
-    theme_classic() + #change to classic theme
-    theme(text = element_text(size = 13), #X and Y Label text size 
-        legend.text = element_text(size = 15), #Legend text size
-        legend.title = element_text(size = 15)) #Legend title text size
-#__________________________________________________________________________________________________#
+ggplot(data = predicated_data,
+       aes(x = rank, y = probability_of_heart_disease)) +
+  geom_point(aes(color = heart_disease_status), stroke = 1.4) +
+  xlab("Index (patients ranked based on their predicted probabilites)") +
+  ylab("Predicted Probability of Heart Disease") +
+  scale_color_manual(name = "Heart Disease",
+                     values = c("lightblue3", "darkred"),
+                     labels = c("Absent", "Present")) +
+  theme_classic() +
+  theme(text = element_text(size = 13),
+        legend.text = element_text(size = 15),
+        legend.title = element_text(size = 15))
 
-#--------------------------------------------------------------------------------------------------
-#           Investigation 4: Exploring the Interaction between Heart Disease and Sex 
-#                           on Maximum Heart Rate  
-#--------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Investigation 4: Exploring the Interaction between Heart Disease
+# and Sex on Maximum Heart Rate
+# -----------------------------------------------------------------------------
 
-#__________________________________________________________________________________________________#
-#Victoria's code for the linear model to explore the interaction between heart disease and sex
-#on max heart rate
+# 4.1: Linear Model for Interactino Analysis
 
+# Perform a linear model exploring the interaction between heart disease
+# and sex on max heart rate
 model_lm <- lm(max_HR ~ heart_disease * sex, data = heart_modified)
 
-#View the results
+# View the results
 summary(model_lm)
 
-#Plot to check if assumptions are met
-plot(model_lm) #Make sure to view all 4 diagnostic plots before moving on with the code
 
-#Check for multi-collinearity
-vif(model_lm, type = "predictor") #VIF function measures multi-collinearity
-                                    #Adjusted GVIF values > 10 indicates multi-collinearity issues
-#__________________________________________________________________________________________________#
+# 4.2: Diagnostic Plot to Check Assumptions
 
+# Ensure to sure to view all 4 diagnostic plots before proceeding
+plot(model_lm)
 
-#__________________________________________________________________________________________________#
-#Emily's code for subsetting the data that will be used to create the figure to visualize the 
-#interaction between heart disease and sex on max heart rate
-
-interaction_data <- heart_modified %>% #Make a new object called "interaction_data"
-    group_by(heart_disease, sex) %>% #Group the data by heart disease status and sex
-    summarise(mean_max_HR = mean(max_HR)) #Find the mean max heart rate for each group
-#__________________________________________________________________________________________________#
+# Check for multi-collinearity
+# Adjusted GVIF values > 10 indicates multi-collinearity issues
+vif(model_lm, type = "predictor")
 
 
-#__________________________________________________________________________________________________#
-#Saad's code for creating the figure to visualize the interaction between heart disease and sex
-#on max heart rate
+# 4.2: Data Preparation for Interaction Figure
 
-ggplot(interaction_data, aes(x = heart_disease, y = mean_max_HR, color = sex, group = sex, shape = sex, linetype = sex)) +
-        geom_point(size = 3) + #Point size
-    geom_line(size = 1) + #Line size
-    scale_color_manual(values = c("blue1", "darkred")) + #Color of the lines
-    scale_shape_manual(values = c(16, 17)) + #The shape for each sex
-    scale_linetype_manual(values = c("solid", "solid")) + #Line type for each sex
-    labs(x = "Heart Disease", #x-label
-        y = "Max Heart Rate", #y-label
-        color = "Sex", shape = "Sex", linetype = "Sex") +
-    scale_x_discrete(expand = c(0, 0.3)) + #Adjust space between labels on X axis
-    theme_classic() + #Change theme to classic
-    theme(text = element_text(size = 13), #X and Y axis label text size
-        legend.text = element_text(size = 14), #Legend text size
-        legend.title = element_text(size = 14)) #Legend title size
-#__________________________________________________________________________________________________#
+# Subset the data for creating the figure to visualize the interaction between
+# heart disease and sex on max heart rate
+interaction_data <- heart_modified %>%
+  group_by(heart_disease, sex) %>%
+  summarise(mean_max_HR = mean(max_HR))
 
 
+# 4.3: Interaction Visualization
 
+# Create a figure to visually explore the interaction between heart disease
+# and sex on max heart rate
+ggplot(interaction_data, aes(x = heart_disease, y = mean_max_HR, color = sex,
+                             group = sex, shape = sex, linetype = sex)) +
+  geom_point(size = 3) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("blue1", "darkred")) +
+  scale_shape_manual(values = c(16, 17)) +
+  scale_linetype_manual(values = c("solid", "solid")) +
+  labs(x = "Heart Disease",
+       y = "Max Heart Rate",
+       color = "Sex", shape = "Sex", linetype = "Sex") +
+  scale_x_discrete(expand = c(0, 0.3)) +
+  theme_classic() +
+  theme(text = element_text(size = 13),
+        legend.text = element_text(size = 14),
+        legend.title = element_text(size = 14))
 
+# -----------------------------------------------------------------------------
 
+# -----------------------------------------------------------------------------
 
+# This concludes the series of investigations on heart disease analysis.
+# Thank you for exploring the data and relationships with us!
 
+# -----------------------------------------------------------------------------
 
+# This concludes the series of investigations on heart disease analysis.
+# Thank you for exploring the data and relationships!
 
-
+# -----------------------------------------------------------------------------
