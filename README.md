@@ -24,5 +24,21 @@ The table below shows the variables used for analysis:
 [2]: https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
 [3]: https://www.semanticscholar.org/paper/International-application-of-a-new-probability-for-Detrano-J%C3%A1nosi/a7d714f8f87bfc41351eb5ae1e5472f0ebbe0574
 
+## Methodology
+The methodology of this project involves a structured approach to analyzing heart disease using clinical variables. This involves the following key steps:
+
+1. Data Setup and Preparation 
 
 
+2. Exploratory Data Analysis (EDA)
+
+3. Data Preprocessing
+
+4. Investigations 
+
+### Exploratory Data Analysis 
+
+## Investigations
+
+## Conclusion
+The combination of exploratory data analysis, PCA, and predictive modeling offers a comprehensive understanding of the relationships between clinical variables and heart disease.

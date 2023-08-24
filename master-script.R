@@ -81,6 +81,7 @@ heart_modified %>%
           cex.lab = 1.4,
           cex.axis = 1.2)
 
+
 # 2.2 Correlation Matrix Visualization
 # Create the correlation matrix for the data set and the PCA
 cor_matrix <- round(cor(heart_original), 1)
@@ -93,11 +94,8 @@ cor_matrix
 ggcorrplot(cor_matrix, lab = TRUE) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
-# -----------------------------------------------------------------------------
-# Section 3: Principle Component Analysis (PCA)
-# -----------------------------------------------------------------------------
 
-# 3.1: Perform PCA and View Results
+# 2.3: Principle Component Analysis (PCA)
 
 # Create an object called "pca_heart" to hold PCA results
 pca_heart <- prcomp(heart_original,
@@ -106,9 +104,6 @@ pca_heart <- prcomp(heart_original,
 # View the PCA results
 pca_heart
 
-
-# 3.2: Summary and Loadings
-
 # Display summary statistics for PCA
 summary(pca_heart)
 
@@ -116,7 +111,7 @@ summary(pca_heart)
 pca_heart$rotation
 
 
-# 3.3: Scree Plot
+# 2.4: Scree Plot
 
 # Create a line plot of the principle component scores using rule 1
 screeplot(pca_heart,
@@ -127,7 +122,7 @@ screeplot(pca_heart,
 abline(1, 0, col = "red")
 
 
-# 3.4: Bi-Plots
+# 2.5: Bi-Plots
 
 # Create a bi-plot of the principle component scores with the eigenvectors
 fviz_pca_var(pca_heart,
@@ -146,10 +141,10 @@ fviz_pca_ind(pca_heart,
   labs(col = "Contribution")
 
 # -----------------------------------------------------------------------------
-# Section 4: Data Preprocessing
+# Section 3: Data Preprocessing
 # -----------------------------------------------------------------------------
 
-# 4.1: Convert Categorical Variables into Factors
+# 3.1: Convert Categorical Variables into Factors
 
 # Convert the "heart_disease" variable in the dataset into a factor with
 # updated labels  "Absent" and "Present" in place of 0 and 1
