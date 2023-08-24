@@ -6,7 +6,7 @@ Heart disease stands as a significant public health concern, ranking as the seco
 
 ## Dataset 
 
-The dataset used for this project consists of clinical data collected from 1018 high-risk patients, encompassing 13 variables, each holding valuable insights into potential risk factors and clinical indicators. Originally sourced from the UCI Machine Learning Repository[1], the dataset was made available on Kaggle[2]. The roots of this dataset can be traced back to a research paper publoshed in 1989 by Detrano et al[3]. The dataset's incorporation of diverse clinical variables from this study not only enriches our analysis but also aligns with the continuous efforts to advance predictive healthcare models and enhance preventive care strategies.
+The dataset used for this project consists of clinical data collected from 1018 high-risk patients, encompassing 13 variables, each holding valuable insights into potential risk factors and clinical indicators. Originally sourced from the [UCI Machine Learning Repository][1], the dataset was made available on [Kaggle][2]. The roots of this dataset can be traced back to a research paper published in 1989 by [Detrano et al][3]. The dataset's incorporation of diverse clinical variables from this study not only enriches our analysis but also aligns with the continuous efforts to advance predictive healthcare models and enhance preventive care strategies.
 
 The table below shows the variables used for analysis:
 
@@ -17,12 +17,12 @@ The table below shows the variables used for analysis:
 | Cholesterol        | Heart disease (presence/absence)  | ST slope (upsloping/downsloping/flat) |
 | Maximum heart rate | Major vessels count (0-4)     | Chest pain type (typical angina/atypical angina/non-anginal pain/asymptomatic) |
 | Old peak *          |  | |
-                                |
+
 * ST depression induced by exercise relative to the rest, where ST relates to depression on the ECG plot. 
 
-[1] https://archive.ics.uci.edu/dataset/45/heart+disease
-[2] https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
-[3] https://www.semanticscholar.org/paper/International-application-of-a-new-probability-for-Detrano-J%C3%A1nosi/a7d714f8f87bfc41351eb5ae1e5472f0ebbe0574
+[1]: https://archive.ics.uci.edu/dataset/45/heart+disease
+[2]: https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
+[3]: https://www.semanticscholar.org/paper/International-application-of-a-new-probability-for-Detrano-J%C3%A1nosi/a7d714f8f87bfc41351eb5ae1e5472f0ebbe0574
 
 
 
