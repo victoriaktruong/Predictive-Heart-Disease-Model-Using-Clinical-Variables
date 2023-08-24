@@ -8,21 +8,22 @@
 
 # 1.1: Install the Required Packages
 
-# Tidyverse is a collection of packages commonly used for data analysis,
+# tidyverse is a collection of packages commonly used for data analysis,
 # manipulation, and visualization (e.g., ggplot2, ddplyr, tidyr)
 
 install.packages("tidyverse")
 
-# GGcorrplot visualizes correlation matrices using ggplot2
+# ggcorrplot visualizes correlation matrices using ggplot2
 install.packages("ggcorrplot")
 
-# Factoextra is used to make PCA figures
+# factoextra is used to make PCA figures
 install.packages("factoextra")
 
-# Vegan is used in multivariate data analysis (PCA)
+# vegan is used in multivariate data analysis (PCA)
 install.packages("vegan")
 
-# Car helps with hypothesis testing and checking for multi-collinearity
+# car (companion to applied regression) helps with hypothesis testing
+# and checking for multi-collinearity
 install.packages("car")
 
 
@@ -42,7 +43,7 @@ heart_original <- read_csv("heart.csv")
 # View the dataset to make sure it loaded correctly
 View(heart_original)
 
-# Rename some columns for better usability
+# Rename columns for better usability
 heart_original <- rename(heart_original,
                          chest_pain_type = "cp",
                          max_HR = "thalach",
@@ -55,10 +56,10 @@ heart_original <- rename(heart_original,
                          cholesterol = "chol")
 
 # Convert all 0 values in "thal" column to NA as
-# these are NULL in the original dataset)
+# these are NULL in the original dataset
 heart_original$thal[heart_original$thal == 0] <- NA
 
-# Remove all of the NA rows in the dataset
+# Remove all the NA rows in the dataset
 heart_original <- na.omit(heart_original)
 
 # Create object called "heart_modified" which will be a copy of the object
@@ -83,14 +84,14 @@ heart_modified %>%
 
 
 # 2.2 Correlation Matrix Visualization
+
 # Create the correlation matrix for the data set and the PCA
 cor_matrix <- round(cor(heart_original), 1)
 
 # View the correlation matrix
 cor_matrix
 
-# To visualize the correlation matrix, use the ggcorrplot command and insert
-# the cor_matrix object as the argument ##########??????
+# EXPLAIN WHAT IS HAPPENING HEREEEEEE???????
 ggcorrplot(cor_matrix, lab = TRUE) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
@@ -147,7 +148,7 @@ fviz_pca_ind(pca_heart,
 # 3.1: Convert Categorical Variables into Factors
 
 # Convert the "heart_disease" variable in the dataset into a factor with
-# updated labels  "Absent" and "Present" in place of 0 and 1
+# updated labels "Absent" and "Present" in place of 0 and 1
 heart_modified$heart_disease <-
   factor(heart_modified$heart_disease,
          levels = c(0, 1), labels = c("Absent", "Present"))
@@ -271,6 +272,7 @@ View(heart_logistic)
 
 
 # 2.2: Logistic Regression Figure
+
 # Create a logistic regression figure to visualize the relationship between
 # max heart rate and heart disease
 ggplot(data = heart_logistic, aes(x = max_HR, y = heart_disease)) +
@@ -291,6 +293,7 @@ ggplot(data = heart_logistic, aes(x = max_HR, y = heart_disease)) +
 
 
 # 2.3: Logistic Regression Analysis
+
 # Perform logistic regression on the relationship between max heart rate and
 # heart disease
 
@@ -304,12 +307,13 @@ summary(model_glm)
 
 
 # 2.4: Diagnostic Plot to Check Assumptions
+
 # Make sure to view all 4 diagnostic plots before proceeding on
 # with the analysis
 plot(model_glm)
 
 # -----------------------------------------------------------------------------
-# Investigation 3: Predicting Heart Disease using All Variables
+# Investigation 3: Predicting Heart Disease Using All Variables
 # -----------------------------------------------------------------------------
 
 # 3.1: Logistic Regression Analysis
@@ -341,7 +345,7 @@ vif(model_glm_all)
 
 # 3.3: Predicted Probability Analysis
 
-# Creating a new data frame to store the predicted probabilities
+# Create a new data frame to store the predicted probabilities
 # and heart disease status
 
 # Create a new data frame called "predicted_data"
@@ -385,7 +389,7 @@ ggplot(data = predicated_data,
 # and Sex on Maximum Heart Rate
 # -----------------------------------------------------------------------------
 
-# 4.1: Linear Model for Interactino Analysis
+# 4.1: Linear Model for Interaction Analysis
 
 # Perform a linear model exploring the interaction between heart disease
 # and sex on max heart rate
@@ -405,7 +409,7 @@ plot(model_lm)
 vif(model_lm, type = "predictor")
 
 
-# 4.2: Data Preparation for Interaction Figure
+# 4.3: Data Preparation for Interaction Figure
 
 # Subset the data for creating the figure to visualize the interaction between
 # heart disease and sex on max heart rate
@@ -414,7 +418,7 @@ interaction_data <- heart_modified %>%
   summarise(mean_max_HR = mean(max_HR))
 
 
-# 4.3: Interaction Visualization
+# 4.4: Interaction Visualization
 
 # Create a figure to visually explore the interaction between heart disease
 # and sex on max heart rate
@@ -433,13 +437,6 @@ ggplot(interaction_data, aes(x = heart_disease, y = mean_max_HR, color = sex,
   theme(text = element_text(size = 13),
         legend.text = element_text(size = 14),
         legend.title = element_text(size = 14))
-
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
-
-# This concludes the series of investigations on heart disease analysis.
-# Thank you for exploring the data and relationships with us!
 
 # -----------------------------------------------------------------------------
 
