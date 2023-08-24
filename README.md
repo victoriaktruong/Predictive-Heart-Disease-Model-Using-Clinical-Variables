@@ -10,7 +10,7 @@ The dataset used for this project consists of clinical data collected from 1018 
 
 The table below shows the variables used for analysis:
 
-| Continuous          | Categorical                   |          | 
+| Continuous          | Categorical                             | 
 |--------------------|-----------------------------|----------| 
 | Age (mean = 54.4) | Sex                         | Resting blood pressure | 
 | Exercise induced angina (heart pain no or yes) | Fasting blood sugar (<120 or >120) | Resting ECG (normal or abnormal) |
