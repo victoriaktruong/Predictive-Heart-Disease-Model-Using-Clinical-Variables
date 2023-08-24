@@ -27,16 +27,22 @@ The table below shows the variables used for analysis:
 ## Methodology
 The methodology of this project involves a structured approach to analyzing heart disease using clinical variables. This involves the following key steps:
 
-1. Data Setup and Preparation 
+1. **Data Setup and Preparation:** Installing and loading essential R packages, such as Tidyverse, GGcorplot, Factoextra, Vegan, and Car. These packages facilitate data manipulation, visualization, and statistical analysis. The heart disease dataset is loaded in. Rows containing "NA" are removed.
 
+2. **Exploratory Data Analysis (EDA):** EDA is a critical step in understanding the dataset's structure, distributions, and relationships between variables. Visualizations, such as box plots, help detect outliers and potential data issues. The correlation matrix visualized using GGcorrplot provides insights into variable relationships. Principle component analysis (PCA) helps identify underlying patterns in the dataset.
 
-2. Exploratory Data Analysis (EDA)
+3. ***Data Preprocessing:** Categorical variables are converted into factors, ensuring that they are correctly treated during modeling. Labels for various categorical variables, such as heart disease status, chest pain type, and more, are transformed to enhance interpretability.
 
-3. Data Preprocessing
-
-4. Investigations 
+4. **Investigations:** A series of investigations are performed to explore different aspects of heart disease relationships using statistical analysis and visualizations.
 
 ### Exploratory Data Analysis 
+The EDA phase aims to reveal initial insights and patterns within the heart disease dataset.
+
+1. **Box Plots for Outlier Detection:**  A set of box plots is generated for continuous variables (age, resting BP, max HR, cholesterol, oldpeak) to identify potential outliers. This step helps ensure data quality and informs subsequent analysis.
+
+2. **Correlation Matrix Visualization:** The correlation matrix is computed to understand relationships between numerical variables. GGcorrplot is used to visualize this matrix, providing a clear view of variable correlations and potential multicollinearity.
+
+3. **Principle Component Analysis (PCA):** PCA is employed to identify patterns and reduce dimensionality within the dataset. PCA reveals the most significant components that explain the variance in the data.
 
 ## Investigations
 
