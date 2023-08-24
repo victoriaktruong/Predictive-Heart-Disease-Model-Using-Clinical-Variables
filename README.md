@@ -10,13 +10,14 @@ The dataset used for this project consists of clinical data collected from 1018 
 
 The table below shows the variables used for analysis:
 
-| Continuous          | Categorical                            | Combined Column                 |
-|--------------------|----------------------------------------|---------------------------------|
-| Age (mean = 54.4) | Sex                                    | Resting ECG (normal or abnormal) |
-| Resting blood pressure | Fasting blood sugar (<120 or >120) | Exercise induced angina (heart pain no or yes) |
-| Cholesterol        | Heart disease (presence or absence)  | ST slope (upsloping, downsloping, or flat) |
-| Maximum heart rate | Major vessels count (0-4)             |                                 |
-| Old peak           | Chest pain type (typical angina, atypical angina, non-anginal pain, asymptomatic) |                                 |
+| Continuous          | Categorical                   |          | 
+|--------------------|-----------------------------|----------| 
+| Age (mean = 54.4) | Sex                         | Combined Column | 
+| Resting blood pressure | Fasting blood sugar (<120 or >120) | Resting ECG (normal or abnormal) |
+| Cholesterol        | Heart disease (presence or absence)  | Exercise induced angina (heart pain no or yes) |
+| Maximum heart rate | Major vessels count (0-4)     | ST slope (upsloping, downsloping, or flat) |
+| Old peak           | Chest pain type (typical angina, atypical angina, non-anginal pain, asymptomatic) | |
+                                |
 
 
 [^1] https://archive.ics.uci.edu/dataset/45/heart+disease
