@@ -12,8 +12,8 @@ The table below shows the variables used for analysis:
 
 | Continuous          | Categorical                   |          | 
 |--------------------|-----------------------------|----------| 
-| Age (mean = 54.4) | Sex                         | Resting blood pressure | 
-| Exercise induced angina (heart pain no or yes) | Fasting blood sugar (<120 or >120) | Resting ECG (normal or abnormal) |
+| Age (mean = 54.4) | Sex (M/F)                      | Resting ECG (normal or abnormal) | 
+| Resting blood pressure | Fasting blood sugar (<120 or >120) | Exercise induced angina (presence or absence) |
 | Cholesterol        | Heart disease (presence or absence)  | ST slope (upsloping, downsloping, or flat) |
 | Maximum heart rate | Major vessels count (0-4)     | Chest pain type (typical angina, atypical angina, non-anginal pain, asymptomatic) |
 | Old peak           |  | |
