@@ -45,13 +45,22 @@ The EDA phase aims to reveal initial insights and patterns within the heart dise
 3. **Principle Component Analysis (PCA):** PCA is employed to identify patterns and reduce dimensionality within the dataset. PCA reveals the most significant components that explain the variance in the data.
 
 ## Investigations
-### Investigation 1: 
+### Investigation 1: Exploring the Relationship between Chest Pain and Heart Disease 
+In Investigation 1, we explored the relationship between chest pain types and the occurrence of heart disease. By summarizing the data and creating a clustered bar chart, we observed that different types of chest pain are associated with varying frequencies of heart disease. Notably, individuals with "Atypical angina" and "Non-anginal pain" chest pain types are more likely to have heart disease compared to those with "Typical angina" or "Asymptomatic" chest pain.
 
-### Investigation 2:
 
-### Investigation 3: (investigation 2 in ppt)
+### Investigation 2: Predicting Heart Disease Based on Maximum Heart Rate
+The logistic regression analysis revealed that maximum heart rate is a significant predictor of heart disease. The logistic regression curve displayed a clear upward trend, indicating that higher maximum heart rates are associated with an increased probability of heart disease.
 
-### Investigation 4: (investigation 1 in ppt)
+
+### Investigation 3: Predicting Heart Disease using All Variables
+The logistic regression analysis yielded coefficients and p-values for each variable. Some variables were found to be significant predictors, while others did not exhibit strong predictive power. The overall model provided insights into the collective impact of different clinical variables on heart disease prediction.
+
+
+### Investigation 4: Exploring the Interaction between Heart Disease and Sex on Maximum Heart Disease (investigation 1 in ppt)
+The significant interaction effect between heart disease and sex on maximum heart rate suggests that gender plays a role in how heart disease influences heart rate. The observation that men with heart disease have higher maximum heart rates underscores the potential physiological differences between genders in response to heart disease.
+
 
 ## Conclusion
 The combination of exploratory data analysis, PCA, and predictive modeling offers a comprehensive understanding of the relationships between clinical variables and heart disease.
+Possible improvements involve evaluating the model's performance with a larger sample size, exploring interaction effects among all predictor variables, and introducing additional variables from the original dataset, which encompasses 76 variables, to increase predictive force.
