@@ -1,4 +1,4 @@
-# Predictive Heart Disease Model Using Clinical Variables
+# Predictive Heart Disease Model
 
 ## Background
 
