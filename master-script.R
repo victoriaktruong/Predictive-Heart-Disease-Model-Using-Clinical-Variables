@@ -91,7 +91,6 @@ cor_matrix <- round(cor(heart_original), 1)
 # View the correlation matrix
 cor_matrix
 
-# EXPLAIN WHAT IS HAPPENING HEREEEEEE???????
 ggcorrplot(cor_matrix, lab = TRUE) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
